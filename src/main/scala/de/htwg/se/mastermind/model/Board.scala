@@ -18,4 +18,6 @@ case class Board(rounds: Vector[Round], solution: Vector[Peg])
   def replaceRound(roundIndex: Int, pegVector : Vector[Peg]): Board = {
     copy(rounds.updated(roundIndex, rounds(roundIndex).replacePegs(pegVector)), solution)
   }
+
+  def getCurrentRoundIndex: Int = rounds.indices.iterator.find(index => !rounds(index).allPegsAreSet).getOrElse(-1)
 }

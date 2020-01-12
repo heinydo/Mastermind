@@ -9,4 +9,6 @@ case class Round(pegs : Vector[Peg])
     pegVector.foreach(peg => newPegs = newPegs :+ peg)
     this.copy(pegVector)
   }
+
+  def allPegsAreSet: Boolean = if (pegs.contains(Peg(0))) false else true
 }

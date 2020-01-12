@@ -13,7 +13,7 @@ class Tui {
       //solvedGrid
       case _ => {
         input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
-       case color :: Nil => board.set(0,Peg(color))
+       case color :: Nil => board.set(board.getCurrentRoundIndex,Peg(color))
           case _ => board
         }
       }
