@@ -1,7 +1,8 @@
 package de.htwg.se.mastermind.model
 
-case class Peg(value: Int){
-  def this() = this(0)
-  def isSet: Boolean = value != 0
-  override def toString: String = value.toString.replace('0', ' ')
+case class Peg[A](color: A){
+
+  def emptyColor: Boolean = color.toString.equals(" ")
+  def updateColor(color: Color): Peg[Color] = Peg(color)
+  override def toString: String = color.toString.replace('0', ' ')
 }

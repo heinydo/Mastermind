@@ -1,23 +1,26 @@
 package de.htwg.se.mastermind.model
 
-case class Board(rounds: Vector[Round], solution: Vector[Peg])
+case class Board(rows: Vector[Row], solution: Vector[Peg[Color]])
 {
-  def this (numOfRounds: Int, numOfPegs: Int) = this(Vector.fill(numOfRounds)(new Round(numOfPegs)), Vector.fill(numOfPegs)(new Peg(0)))
-  def numOfRounds: Int = rounds.size
+  def this (numberOfRows: Int, numOfPegs: Int) = this(Vector.fill(numberOfRows)(new Row(numOfPegs)), Vector.fill(numOfPegs)(new Peg(new Color())))
+  def numOfRows: Int = rows.size
   def numOfPegs: Int = solution.size
 
-  def set(roundIndex: Int, newPeg: Peg): Board = {
-    var newPegs = Vector.fill(this.numOfPegs)(Peg(0))
-    val alreadySetPegs = rounds(roundIndex).pegs.filter(p => p.value != 0)
+  def set(roundIndex: Int, newColor: Int): Board = {
+    var newPegs = Vector.fill(numOfPegs)(new Peg(new Color()))
+    val alreadySetPegs = rows(roundIndex).prediction.pegs.filter(peg => !peg.emptyColor)
     alreadySetPegs.indices.foreach(i => newPegs = newPegs.updated(i, alreadySetPegs(i)))
-    val i = newPegs.indexOf(Peg(0))
-    newPegs = newPegs.updated(i, newPeg)
+
+    val i = newPegs.indexOf(Peg(Color(0)))
+    newPegs = newPegs.updated(i, Peg(Color(newColor)))
     replaceRound(roundIndex, newPegs)
   }
 
-  def replaceRound(roundIndex: Int, pegVector : Vector[Peg]): Board = {
-    copy(rounds.updated(roundIndex, rounds(roundIndex).replacePegs(pegVector)), solution)
-  }
+  def getCurrentRoundIndex: Int = rows.indices.iterator.find(index => rows(index).isSet).getOrElse(-1)
 
-  def getCurrentRoundIndex: Int = rounds.indices.iterator.find(index => !rounds(index).allPegsAreSet).getOrElse(-1)
+  def replaceRound(roundIndex: Int, pegVector : Vector[Peg[Color]]): Board = {
+    var hints = Vector.fill(numOfPegs)(new Hint())
+    //if (!pegVector.contains(Peg(0))) hints = createHints(solution, pegVector)
+    copy(rows.updated(roundIndex, rows(roundIndex).replacePegs(pegVector, hints)), solution)
+  }
 }

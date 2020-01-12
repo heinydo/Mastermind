@@ -1,6 +1,6 @@
 package de.htwg.se.mastermind.aview
 
-import de.htwg.se.mastermind.model.{Board, Peg}
+import de.htwg.se.mastermind.model.{Board, Color, Peg}
 
 class Tui {
   def processInputLine(input: String, board:Board):Board = {
@@ -13,7 +13,7 @@ class Tui {
       //solvedGrid
       case _ => {
         input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
-       case color :: Nil => board.set(board.getCurrentRoundIndex,Peg(color))
+       case color :: Nil => board.set(board.getCurrentRoundIndex, color)
           case _ => board
         }
       }
