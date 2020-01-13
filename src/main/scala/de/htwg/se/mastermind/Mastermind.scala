@@ -1,21 +1,23 @@
 package de.htwg.se.mastermind
 
+import com.google.inject.{Guice, Injector}
+import com.typesafe.scalalogging.Logger
 import de.htwg.se.mastermind.aview.Tui
-import de.htwg.se.mastermind.model.Board
+import de.htwg.se.mastermind.controller.controllerComponent.ControllerInterface
 
 import scala.io.StdIn.readLine
 
 object Mastermind {
-  var board = new Board(10, 4)
-  val tui = new Tui
+  val injector: Injector = Guice.createInjector(new MastermindModule)
+  val controller: ControllerInterface = injector.getInstance(classOf[ControllerInterface])
+  val tui: Tui = new Tui(controller)
 
   def main(args: Array[String]): Unit = {
     var input: String = ""
 
     do {
-      println("Board : " + board.toString)
       input = readLine()
-      board = tui.processInputLine(input, board)
+      tui.processInputLine(input)
     } while (input != "q")
   }
 }
