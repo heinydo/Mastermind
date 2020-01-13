@@ -46,6 +46,24 @@ case class Board(rows: Vector[Row], solution: Vector[Color])
     }
     hints
   }
+
+  override def toString: String = {
+    val lineSeparator = ("+-" + ("--" * numOfPegs)) + "+-" + ("--" * numOfPegs) + "+\n"
+    val line = ("| " + ("x " * numOfPegs)) + ("| " + ("x " * numOfPegs)) + "|\n"
+    var box = "\n" + (lineSeparator + line) * numOfRows + lineSeparator
+
+    for {
+      printRow <- rows.indices
+      printCol <- 0 until numOfPegs * 2
+    } {
+      if (printCol < numOfPegs) {
+        box = box.replaceFirst("x", rows(printRow).prediction.pegs(printCol).color.toString)
+      } else {
+        box = box.replaceFirst("x", rows(printRow).predictionHint.pegs(printCol - numOfPegs).color.toString)
+      }
+    }
+    box
+  }
 }
 
 

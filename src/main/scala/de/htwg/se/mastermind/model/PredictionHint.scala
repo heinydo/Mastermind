@@ -7,7 +7,7 @@ case class PredictionHint (pegs: Vector[Peg[Hint]]){
 
   def replacePegs(hintVec: Vector[Peg[Hint]]): PredictionHint = {
     var newPegs = Vector.empty[Peg[Hint]]
-    //hintVec.foreach(hint => newPegs = newPegs :+ Peg(hint))
+    hintVec.foreach(hint => newPegs = newPegs :+hint)
     copy(newPegs)
   }
 
