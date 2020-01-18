@@ -1,6 +1,7 @@
 package de.htwg.se.mastermind.aview
 
 import akka.actor.ActorSystem
+import akka.stream.Materializer
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives._

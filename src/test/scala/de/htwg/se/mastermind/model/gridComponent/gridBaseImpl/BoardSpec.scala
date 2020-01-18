@@ -1,7 +1,6 @@
 package de.htwg.se.mastermind.model.gridComponent.gridBaseImpl
 
-import de.htwg.se.mastermind.model.boardComponent.boardBaseImpl
-import de.htwg.se.mastermind.model.boardComponent.boardBaseImpl.{Board, Color, Peg, Row}
+import de.htwg.se.mastermind.model.boardComponent.boardBaseImpl._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{Matchers, WordSpec}
@@ -28,7 +27,7 @@ class BoardSpec extends WordSpec with Matchers {
     }
     "called with a given solution" should {
       val solution = Vector[Color](Color(1), Color(2), Color(5), Color(6))
-      val boardWithSolution = boardBaseImpl.Board(Vector.fill(10)(new Row(4)), solution)
+      val boardWithSolution = Board(Vector.fill(10)(new Row(4)), solution)
       val colVec = Vector[Peg[Color]](Peg(Color(2)), Peg(Color(2)), Peg(Color(2)), Peg(Color(2)))
       val newBoard = boardWithSolution.replaceRow(0, colVec)
       "have this solution" in {
@@ -47,7 +46,7 @@ class BoardSpec extends WordSpec with Matchers {
       val round = new Row(4)
       val rounds = Vector(round, round, round, round)
       val solution = Vector[Color](Color(1), Color(2), Color(3), Color(4))
-      val board = boardBaseImpl.Board(rounds, solution)
+      val board = Board(rounds, solution)
       "have four rounds" in {
         board.rows.size should be(4)
       }
@@ -63,7 +62,7 @@ class BoardSpec extends WordSpec with Matchers {
     }
     "tested for game logic" should {
       val solution = Vector[Color](Color(5), Color(6), Color(4), Color(8))
-      val boardWithSolution = boardBaseImpl.Board(Vector.fill(8)(new Row(4)), solution)
+      val boardWithSolution = Board(Vector.fill(8)(new Row(4)), solution)
       "give back these hints when one color and position is guessed correctly" in {
         val colVec = Vector[Peg[Color]](Peg(Color(5)), Peg(Color(5)), Peg(Color(5)), Peg(Color(5)))
         val newBoard = boardWithSolution.replaceRow(0, colVec)
@@ -92,7 +91,7 @@ class BoardSpec extends WordSpec with Matchers {
     }
     "solved before last round" should {
       val solution = Vector[Color](Color(1), Color(2), Color(3), Color(4))
-      var boardWithSolution = boardBaseImpl.Board(Vector.fill(solution.size)(new Row(4)), solution)
+      var boardWithSolution = Board(Vector.fill(solution.size)(new Row(4)), solution)
       val colVec = Vector[Peg[Color]](Peg(Color(2)), Peg(Color(2)), Peg(Color(4)), Peg(Color(8)))
       val newBoard = boardWithSolution.replaceRow(0, colVec)
       "have this solution" in {

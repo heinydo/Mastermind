@@ -22,7 +22,6 @@ object Mastermind {
   implicit val actorSystem = ActorSystem("actorSystem")
   val uiFactory = actorSystem.actorOf(Props[UiFactory])
 
-  uiFactory ! Crash // demonstrate error / restart handling
   val controller: ControllerInterface = injector.getInstance(classOf[ControllerInterface])
   val tuiFuture = uiFactory ? CreateTui(controller)
   val tui = Await.result(tuiFuture.mapTo[Tui], Duration.Inf)
