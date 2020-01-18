@@ -20,10 +20,9 @@ case class Board(rows: Vector[Row], solution: Vector[Color])
 
   def replaceRow(roundIndex: Int, pegVector : Vector[Peg[Color]]): Board = {
     var hints = Vector.fill(numOfPegs)(Peg(new Hint))
-    if (!pegVector.contains(Peg(0))) hints = createHints(solution, pegVector)
+    if (pegVector.contains(Peg(Color))) hints = createHints(solution, pegVector)
     copy(rows.updated(roundIndex, rows(roundIndex).replaceRow(pegVector, hints)), solution)
   }
-
 
   def createHints(solution: Vector[Color], colVec: Vector[Peg[Color]]): Vector[Peg[Hint]] = {
     var hints = Vector.empty[Peg[Hint]]

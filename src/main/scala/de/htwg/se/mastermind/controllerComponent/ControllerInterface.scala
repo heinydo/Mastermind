@@ -46,6 +46,9 @@ trait ControllerInterface extends Publisher {
   def save(): Unit
 
   def load(): Unit
+
+  def boardToHtml: String
+
 }
 
 class PegChanged extends Event

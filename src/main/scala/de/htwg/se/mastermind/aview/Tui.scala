@@ -1,15 +1,31 @@
 package de.htwg.se.mastermind.aview
 
-import com.typesafe.scalalogging.Logger
+import java.io.BufferedReader
+
+import com.typesafe.scalalogging.{LazyLogging}
 import de.htwg.se.mastermind.controller.controllerComponent.{BoardSizeChanged, ColorSelected, ControllerInterface, GameStatus, PegChanged}
-import de.htwg.se.mastermind.model.{Board, Color, Peg}
 
 import scala.swing.Reactor
 
-class Tui(controller: ControllerInterface) extends Reactor {
+class Tui(controller: ControllerInterface)extends Reactor with LazyLogging {
 
   listenTo(controller)
-  val logger = Logger("Mastermind TUI")
+
+  var stopProcessingInput = false
+
+  def processInput(input: BufferedReader) = {
+    while (!stopProcessingInput) {
+      if (input.ready()) {
+        val line = input.readLine()
+        processInputLine(line)
+      } else {
+        Thread.sleep(200) // don't waste cpu cycles if no input is given
+      }
+    }
+  }
+
+
+
   def processInputLine(input: String):Unit = {
     input match {
       case "q" => System.exit(0)

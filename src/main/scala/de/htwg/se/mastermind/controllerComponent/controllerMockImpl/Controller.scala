@@ -11,8 +11,8 @@ class Controller(var board: BoardInterface) extends ControllerInterface {
   override def boardToString: String = board.toString
   override def getCurrentRoundIndex: Int = 0
   override def set(roundIndex: Int, color: Int): Unit = {}
-  override def mapFromGuiColor(color: java.awt.Color): Int = 1
-  override def mapToGuiColor(color: Int): java.awt.Color = java.awt.Color.PINK
+    override def mapFromGuiColor(color: java.awt.Color): Int = 1
+    override def mapToGuiColor(color: Int): java.awt.Color = java.awt.Color.PINK
   override def mapHintToGuiHint(hintColor: String): java.awt.Color = java.awt.Color.BLACK
   override def guessColor(rowIndex: Int, columnIndex: Int): java.awt.Color = java.awt.Color.PINK
   override def hintColor(rowIndex: Int, columnIndex: Int): java.awt.Color = java.awt.Color.WHITE
@@ -20,6 +20,8 @@ class Controller(var board: BoardInterface) extends ControllerInterface {
   override def redo(): Unit = {}
   override def solve(): Unit = {}
   override def gameStatus: GameStatus = IDLE
+
+  override def boardToHtml: String = board.boardToHtml
 
   override def statusText: String = GameStatus.message(gameStatus)
 

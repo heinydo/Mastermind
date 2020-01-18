@@ -4,6 +4,7 @@ import java.awt.Color
 
 import com.google.inject.name.Names
 import com.google.inject.{Guice, Inject, Injector}
+import com.typesafe.scalalogging.LazyLogging
 import net.codingwell.scalaguice.InjectorExtensions._
 import de.htwg.se.mastermind.MastermindModule
 import de.htwg.se.mastermind.model.boardComponent.BoardInterface
@@ -11,10 +12,7 @@ import de.htwg.se.mastermind.controller.controllerComponent.GameStatus._
 import de.htwg.se.mastermind.controller.controllerComponent.{BoardSizeChanged, ControllerInterface, GameStatus, PegChanged}
 import de.htwg.se.mastermind.util.UndoManager
 
-import scala.swing.Publisher
-
-class Controller @Inject()(var board: BoardInterface) extends ControllerInterface with Publisher {
-
+class Controller @Inject()(var board: BoardInterface)  extends ControllerInterface with LazyLogging {
   var gameStatus: GameStatus = IDLE
   private val undoManager = new UndoManager
   val injector: Injector = Guice.createInjector(new MastermindModule)
@@ -44,12 +42,26 @@ class Controller @Inject()(var board: BoardInterface) extends ControllerInterfac
     publish(BoardSizeChanged(numberOfPegs, numberOfRounds))
   }
 
-  val availableColors: Vector[Int] = board.rows(0).prediction.pegs(0).color.getAvailableColorIndex.toVector
-  val availableHints: Vector[String] = board.rows(0).predictionHint.pegs(0).color.getAvailableHints.toVector
-
   def boardToString: String = board.toString
+  def boardToHtmlString: String = board.boardToHtml
 
   def getCurrentRoundIndex: Int = board.rows.indices.iterator.find(index => !board.rows(index).isSet).getOrElse(-1)
+
+  val availableGUIColors = Vector(
+    java.awt.Color.PINK,
+    java.awt.Color.BLUE,
+    java.awt.Color.CYAN,
+    java.awt.Color.GREEN,
+    java.awt.Color.YELLOW,
+    java.awt.Color.ORANGE)
+
+  val availableGUIHintColors = Vector(
+    java.awt.Color.BLACK,
+    java.awt.Color.WHITE
+  )
+
+  val availableColors: Vector[Int] = board.rows(0).prediction.pegs(0).color.getAvailableColorIndex.toVector
+  val availableHints: Vector[String] = board.rows(0).predictionHint.pegs(0).color.getAvailableHints.toVector
 
   def set(roundIndex: Int, colors: Int): Unit = {
     if (roundIndex != -1) {
@@ -63,14 +75,14 @@ class Controller @Inject()(var board: BoardInterface) extends ControllerInterfac
     var foundColor: Int = 0
     val idx = availableGUIColors.indices.toStream.find(i => availableGUIColors(i).equals(color)).getOrElse(-1)
 
-    if (idx != -1) foundColor = availableColors(idx).toInt
+    if (idx != -1) foundColor = availableColors(idx)
 
     foundColor
   }
 
   def mapToGuiColor(color: Int): java.awt.Color = {
     var foundColor: java.awt.Color = java.awt.Color.GRAY
-    val idx = availableGUIColors.indices.toStream.find(i => availableColors(i).equals(color.toString)).getOrElse(-1)
+    val idx = availableGUIColors.indices.toStream.find(i => availableColors(i).equals(color)).getOrElse(-1)
 
     if (idx != -1) foundColor = availableGUIColors(idx)
 
@@ -80,34 +92,51 @@ class Controller @Inject()(var board: BoardInterface) extends ControllerInterfac
   def undo(): Unit = {
     undoManager.undoStep()
     gameStatus = UNDO
-    publish(new PegChanged)
   }
 
   def redo(): Unit = {
     undoManager.redoStep()
     gameStatus = REDO
-    publish(new PegChanged)
   }
 
   def statusText: String = GameStatus.message(gameStatus)
 
   def save(): Unit = {
     gameStatus = SAVED
-    publish(new PegChanged)
   }
 
   def load(): Unit = {
     gameStatus = LOADED
-    publish(new PegChanged)
   }
 
-  override def mapHintToGuiHint(hintColor: String): Color = ???
+  def mapHintToGuiHint(hintColor: String): java.awt.Color = {
+    var foundHint: java.awt.Color = java.awt.Color.LIGHT_GRAY
+    val idx = availableHints.indices.toStream.find(i => availableHints(i).equals(hintColor)).getOrElse(-1)
 
-  override def guessColor(rowIndex: Int, columnIndex: Int): Color = ???
+    if (idx != -1) foundHint = availableGUIHintColors(idx)
 
-  override def hintColor(rowIndex: Int, columnIndex: Int): Color = ???
+    foundHint
+  }
+
+  def guessColor(rowIndex: Int, columnIndex: Int): java.awt.Color = {
+    var foundColor: java.awt.Color = java.awt.Color.GRAY
+
+    if (!board.rows(rowIndex).prediction.pegs(columnIndex).emptyColor) {
+      foundColor = mapToGuiColor(board.rows(rowIndex).prediction.pegs(columnIndex).color.toString.toInt)
+    }
+    foundColor
+  }
+
+  def hintColor(rowIndex: Int, columnIndex: Int): java.awt.Color = {
+    var foundColor: java.awt.Color = java.awt.Color.LIGHT_GRAY
+
+    if (!board.rows(rowIndex).prediction.containsEmptyColor) {
+      foundColor = mapHintToGuiHint(board.rows(rowIndex).predictionHint.pegs(columnIndex).color.name)
+    }
+    foundColor
+  }
 
   override def solve(): Unit = ???
 
-  override def availableGUIColors: Vector[Color] = ???
+  override def boardToHtml: String = board.boardToHtml
 }

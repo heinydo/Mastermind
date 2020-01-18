@@ -6,7 +6,7 @@ case class Color(colorIndex: Int){
 
   def this() = this(0) //color is not set
 
-  def getAvailableColorIndex: Seq[Int] =  Seq(1,2,3,4,5,6)
+  def getAvailableColorIndex: Seq[Int] =  Seq(1,2,3,4,5,6,7,8)
 
   def isValidColorIndex: Boolean = getAvailableColorIndex.contains(colorIndex)
 

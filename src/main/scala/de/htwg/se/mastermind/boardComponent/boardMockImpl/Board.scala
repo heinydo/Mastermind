@@ -16,4 +16,10 @@ class Board(var rows: Vector[Row], var solution: Vector[Color]) extends BoardInt
   def createHints(solution: Vector[Color], colVec: Vector[Peg[Color]]): Vector[Peg[Hint]] =  Vector[Peg[Hint]](Peg(new Hint))
 
   def createEmptyBoard(newNumberOfPegs: Int, newNumberOfRounds: Int): BoardInterface = this
+
+  def boardToHtml: String = ???
+
+  def isSolved: Boolean = false
+
+  def colorVecToPegVec(colVec: Vector[Color]) : Vector[Peg[Color]] = Vector[Peg[Color]](Peg(new Color()))
 }

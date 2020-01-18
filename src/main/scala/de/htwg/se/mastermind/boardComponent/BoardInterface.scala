@@ -7,8 +7,7 @@ trait BoardInterface {
 
   def undoPeg(roundIndex: Int): BoardInterface = ???
 
-
-  def replaceRow(roundIndex: Int, pegVector : Vector[Peg[Color]]): BoardInterface
+  def replaceRow(roundIndex: Int, pegVector: Vector[Peg[Color]]): BoardInterface
 
   def set(roundIndex: Int, color: Int): BoardInterface
 
@@ -19,4 +18,10 @@ trait BoardInterface {
   def solution: Vector[Color]
 
   def rows: Vector[Row]
+
+  def boardToHtml: String
+
+  def isSolved: Boolean
+
+  def colorVecToPegVec(colVec: Vector[Color]) : Vector[Peg[Color]]
 }

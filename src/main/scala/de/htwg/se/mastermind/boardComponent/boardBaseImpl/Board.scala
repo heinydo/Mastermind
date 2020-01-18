@@ -8,25 +8,24 @@ case class Board(rows: Vector[Row], solution: Vector[Color]) extends BoardInterf
   def numOfPegs: Int = solution.size
 
   def set(roundIndex: Int, newColor: Int): Board = {
-    var newPegs = Vector.fill(numOfPegs)(new Peg(new Color()))
-    val alreadySetPegs = rows(roundIndex).prediction.pegs.filter(peg => !peg.emptyColor)
-    alreadySetPegs.indices.foreach(i => newPegs = newPegs.updated(i, alreadySetPegs(i)))
-
+    val newPegs = rows(roundIndex).prediction.pegs
     val i = newPegs.indexOf(Peg(Color(0)))
-    newPegs = newPegs.updated(i, Peg(Color(newColor)))
-    replaceRow(roundIndex, newPegs)
+    replaceRow(roundIndex, newPegs.updated(i, Peg(Color(newColor))))
   }
+
+  def colorVecToPegVec(colVec: Vector[Color]) : Vector[Peg[Color]] = colVec.foldLeft(Vector[Peg[Color]]())((result, currentElem) => result :+ Peg(currentElem))
 
   def getCurrentRoundIndex: Int = rows.indices.iterator.find(index => rows(index).isSet).getOrElse(-1)
 
-    def replaceRow(roundIndex: Int, pegVector : Vector[Peg[Color]]): Board = {
-    var hints = Vector.fill(numOfPegs)(Peg(new Hint))
-    if (!pegVector.contains(Peg(0))) hints = createHints(solution, pegVector)
-    copy(rows.updated(roundIndex, rows(roundIndex).replaceRow(pegVector, hints)), solution)
+  def replaceRow(roundIndex: Int, pegVector : Vector[Peg[Color]]): Board = {
+    if(!pegVector.contains(Peg(Color(0)))) copy(rows.updated (roundIndex, rows(roundIndex).replaceRow(pegVector, createHints(solution, pegVector))), solution)
+    else copy(rows.updated (roundIndex, rows(roundIndex).replaceRow(pegVector, Vector.fill(numOfPegs)(Peg(new Hint())))), solution)
   }
+  def isSolved: Boolean = rows.indices.exists(i => this.rows(i).predictionHint.equals(rows(i).predictionHint.hintVectorSolved))
 
 
   def createHints(solution: Vector[Color], colVec: Vector[Peg[Color]]): Vector[Peg[Hint]] = {
+
     var hints = Vector.empty[Peg[Hint]]
     var hintSet = Set.empty[Int]
 
@@ -37,7 +36,7 @@ case class Board(rows: Vector[Row], solution: Vector[Color]) extends BoardInterf
       }
     }
     for {i <- colVec.indices} {
-      if (!hintSet.contains(colVec(i).color.colorIndex) && solution.contains(colVec(i))) {
+      if (!hintSet.contains(colVec(i).color.colorIndex) && solution.contains(colVec(i).color)) {
         hintSet = hintSet + colVec(i).color.colorIndex
         hints = hints :+ Peg(Hint("rightCol"))
       }
@@ -65,6 +64,24 @@ case class Board(rows: Vector[Row], solution: Vector[Color]) extends BoardInterf
     }
     box
   }
+  override def boardToHtml: String = {
+    val lineSeparator = ("+-" + ("--" * numOfPegs)) + "+-" + ("--" * numOfPegs) + "+<br>"
+    val line = ("| " + ("x " * numOfPegs)) + ("| " + ("x " * numOfPegs)) + "|<br>"
+    var box = "<br>" + (lineSeparator + line) * numOfRows + lineSeparator
+
+    for {
+      printRow <- rows.indices
+      printCol <- 0 until numOfPegs * 2
+    } {
+      if (printCol < numOfPegs) {
+        box = box.replaceFirst("x", rows(printRow).prediction.pegs(printCol).color.toString)
+      } else {
+        box = box.replaceFirst("x", rows(printRow).predictionHint.pegs(printCol - numOfPegs).color.toString)
+      }
+    }
+    box
+  }
+
   override def createEmptyBoard(newNumberOfPegs: Int, newNumberOfRounds: Int): BoardInterface = this
 }
 
