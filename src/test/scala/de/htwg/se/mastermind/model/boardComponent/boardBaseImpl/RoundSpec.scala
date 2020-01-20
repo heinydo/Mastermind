@@ -1,6 +1,5 @@
-package de.htwg.se.mastermind.model.gridComponent.gridBaseImpl
+package de.htwg.se.mastermind.model.boardComponent.boardBaseImpl
 
-import de.htwg.se.mastermind.model.boardComponent.boardBaseImpl._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{Matchers, WordSpec}

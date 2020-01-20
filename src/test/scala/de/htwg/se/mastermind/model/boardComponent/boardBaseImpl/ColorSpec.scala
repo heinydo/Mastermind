@@ -1,12 +1,12 @@
-package de.htwg.se.mastermind.model.gridComponent.gridBaseImpl
+package de.htwg.se.mastermind.model.boardComponent.boardBaseImpl
 
-import de.htwg.se.mastermind.model.boardComponent.boardBaseImpl.Color
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{Matchers, WordSpec}
 
 @RunWith(classOf[JUnitRunner])
 class ColorSpec extends WordSpec with Matchers {
+  val board = new Board(4,8)
   "A Color" when {
     "having a valid name" should {
       val colorOne = Color(1)

@@ -6,7 +6,7 @@ import akka.actor.{ActorSystem, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.{Guice, Injector}
-import de.htwg.se.mastermind.aview.UiMessage.{Crash, CreateGui, CreateTui}
+import de.htwg.se.mastermind.aview.UiMessage.{CreateGui, CreateTui}
 import de.htwg.se.mastermind.aview.{HttpServer, Tui, UiFactory}
 import de.htwg.se.mastermind.controller.controllerComponent.ControllerInterface
 
