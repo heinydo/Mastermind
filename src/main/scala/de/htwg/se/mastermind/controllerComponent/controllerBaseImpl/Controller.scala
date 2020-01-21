@@ -76,7 +76,6 @@ class Controller @Inject()(var board: BoardInterface)  extends ControllerInterfa
     val idx = availableGUIColors.indices.toStream.find(i => availableGUIColors(i).equals(color)).getOrElse(-1)
 
     if (idx != -1) foundColor = availableColors(idx)
-
     foundColor
   }
 

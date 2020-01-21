@@ -6,7 +6,6 @@ import org.scalatest.{Matchers, WordSpec}
 
 @RunWith(classOf[JUnitRunner])
 class ColorSpec extends WordSpec with Matchers {
-  val board = new Board(4,8)
   "A Color" when {
     "having a valid name" should {
       val colorOne = Color(1)

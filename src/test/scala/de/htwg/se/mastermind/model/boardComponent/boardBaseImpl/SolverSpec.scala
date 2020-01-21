@@ -9,7 +9,7 @@ class SolverSpec extends WordSpec with Matchers {
 
   "A Solver" when {
     "a board is empty" should {
-      val emptyBoard = new Board(4, 10)
+      val emptyBoard = new Board(10, 4)
       "solve a board without any problems" in {
         emptyBoard.isSolved should be(false)
         val solvedBoard = new Solver(emptyBoard).solve

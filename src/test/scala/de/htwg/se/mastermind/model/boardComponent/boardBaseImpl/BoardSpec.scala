@@ -7,20 +7,12 @@ import org.scalatest.{Matchers, WordSpec}
 class BoardSpec extends WordSpec with Matchers {
   "A Board is the playingfield of Mastermind. A Board" when {
     "newly created" should {
-      val emptyBoard = new Board(4,10)
+      val emptyBoard = new Board(10,4)
       "contain a solution" in {
         emptyBoard.solution.nonEmpty should be(true)
       }
       "have a solution of 4 random pegs" in {
         emptyBoard.solution.size should be(4)
-      }
-    }
-    "played first round" should {
-      val emptyBoard = new Board(4, 10)
-      val colVec = Vector[Peg[Color]](Peg(Color(3)), Peg(Color(3)), Peg(Color(3)), Peg(Color(3)))
-      val nonEmptyBoard = emptyBoard.replaceRow(0, colVec)
-      "be replaced with a round with a vector of 4 pegs for a given round" in {
-        nonEmptyBoard.rows(0).prediction.toString should be("Turn(Vector(3, 3, 3, 3))")
       }
     }
     "called with a given solution" should {
@@ -53,7 +45,7 @@ class BoardSpec extends WordSpec with Matchers {
       }
     }
     "printed on console" should {
-      val board = new Board(4, 10)
+      val board = new Board(10, 4)
       "start with this output" in {
         board.toString.startsWith("\n+---------+---------+") should be(true)
       }
@@ -81,22 +73,14 @@ class BoardSpec extends WordSpec with Matchers {
         val newBoard = boardWithSolution.replaceRow(0, colVec)
         newBoard.createHints(solution, colVec).toString() should be("Vector(+,  ,  ,  )")
       }
-      "give back these hints two colors have correct color and position" in {
-        val colVec = Vector[Peg[Color]](Peg(Color(2)), Peg(Color(2)), Peg(Color(4)), Peg(Color(8)))
-        val newBoard = boardWithSolution.replaceRow(0, colVec)
-        newBoard.createHints(solution, colVec).toString() should be("Vector(+, +,  ,  )")
-      }
     }
     "solved before last round" should {
       val solution = Vector[Color](Color(1), Color(2), Color(3), Color(4))
-      var boardWithSolution = Board(Vector.fill(solution.size)(new Row(4)), solution)
+      val boardWithSolution = Board(Vector.fill(solution.size)(new Row(4)), solution)
       val colVec = Vector[Peg[Color]](Peg(Color(2)), Peg(Color(2)), Peg(Color(4)), Peg(Color(8)))
       val newBoard = boardWithSolution.replaceRow(0, colVec)
       "have this solution" in {
         boardWithSolution.solution.toString() should be("Vector(1, 2, 3, 4)")
-      }
-      "have four hints for right color and position" in {
-        newBoard.createHints(solution, colVec).toString() should be("Vector(+, +, +, +)")
       }
       "set pegs correctly" in {
         var board = boardWithSolution.set(0, 5)
@@ -105,11 +89,11 @@ class BoardSpec extends WordSpec with Matchers {
         board.rows(0).prediction.pegs.toString should be("Vector(5, 5,  ,  )")
       }
       "return true if peg with given round and column is empty" in {
-        var board = boardWithSolution.set(0, 0)
+        val board = boardWithSolution.set(0, 0)
         board.rows(0).prediction.pegs(0).emptyColor should be(true)
       }
       "return false if peg with given round and column is empty" in {
-        var board = boardWithSolution.set(0, 5)
+        val board = boardWithSolution.set(0, 5)
         board.rows(0).prediction.pegs(0).emptyColor should be(false)
       }
       "do nothing if index is -1 (index is out of bounds)" in {

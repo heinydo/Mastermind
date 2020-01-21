@@ -41,13 +41,11 @@ class Tui(controller: ControllerInterface)extends Reactor with LazyLogging {
 
   reactions += {
     case event: PegChanged => printTui()
-    case event: ColorSelected =>
     case event: BoardSizeChanged => printTui()
   }
 
   def printTui(): Unit = {
     logger.info(controller.boardToString)
-    //logger.info(GameStatus.message(controller.gameStatus))
   }
 
 }

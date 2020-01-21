@@ -3,7 +3,6 @@ package de.htwg.se.mastermind.controller.controllerComponent.controllerBaseImpl
 import de.htwg.se.mastermind.controller.controllerComponent.GameStatus
 import de.htwg.se.mastermind.controller.controllerComponent.GameStatus._
 import de.htwg.se.mastermind.model.boardComponent.boardBaseImpl.{Board, Color, Row}
-import de.htwg.se.mastermind.util.Observer
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{Matchers, WordSpec}
@@ -16,13 +15,6 @@ class ControllerSpec extends WordSpec with Matchers {
       val rounds = Vector.fill(6)(new Row(2))
       val board = Board(rounds, solution)
       val controller = new Controller(board)
-      val observer = new Observer {
-        var updated: Boolean = false
-
-        def isUpdated: Boolean = updated
-
-        override def update(): Unit = updated = true
-      }
       "notify its Observer after replacing a round" in {
         controller.set(0, 1)
         controller.set(0, 1)
@@ -79,7 +71,7 @@ class ControllerSpec extends WordSpec with Matchers {
         controller.boardToString should startWith("\n+-----+-----+")
       }
       "give back current round index" in {
-        var board2 = new Board(1, 2)
+        val board2 = new Board(2, 1)
         val controller2 = new Controller(board2)
         controller2.getCurrentRoundIndex should be(0)
         controller2.set(0, 1)
@@ -88,19 +80,6 @@ class ControllerSpec extends WordSpec with Matchers {
     }
     "empty" should {
       val controller = new Controller(new Board(2, 2))
-      "handle undo/redo of solving a grid correctly" in {
-        controller.board.rows(0).prediction.containsEmptyColor should be(true)
-        controller.board.isSolved should be(false)
-        controller.solve()
-        controller.board.rows(controller.numberOfRounds - 1).prediction.containsEmptyColor should be(false)
-        controller.board.isSolved should be(true)
-        controller.undo()
-        controller.board.rows(controller.numberOfRounds - 1).prediction.containsEmptyColor should be(true)
-        controller.board.isSolved should be(false)
-        controller.redo()
-        controller.board.rows(controller.numberOfRounds - 1).prediction.containsEmptyColor should be(false)
-        controller.board.isSolved should be(true)
-      }
       "print out a message of game status" in {
         controller.createEmptyBoard()
         GameStatus.message(controller.gameStatus) should be("A new game was created")
@@ -117,27 +96,8 @@ class ControllerSpec extends WordSpec with Matchers {
         testVal should be("do nothing in this case")
       }
     }
-    "resizing board" should {
-      val controller = new Controller(new Board(4, 10))
-      "resize board correctly" in {
-        controller.board.rows.size should be(10)
-        controller.board.rows(0).predictionSize should be(4)
-        controller.resize(6, 8)
-        controller.board.rows.size should be(8)
-        controller.board.rows(0).predictionSize should be(6)
-        controller.resize(4, 12)
-        controller.board.rows.size should be(12)
-        controller.board.rows(0).predictionSize should be(4)
-        controller.resize(7, 7)
-        controller.board.rows.size should be(12)
-        controller.board.rows(0).predictionSize should be(4)
-        controller.resize(4, 10)
-        controller.board.rows.size should be(10)
-        controller.board.rows(0).predictionSize should be(4)
-      }
-    }
     "create empty board" should {
-      val controller = new Controller(new Board(4, 10))
+      val controller = new Controller(new Board(10, 4))
       "create default empty board correctly" in {
         controller.createEmptyBoard()
         controller.board.rows.size should be(10)
@@ -150,18 +110,6 @@ class ControllerSpec extends WordSpec with Matchers {
       "reload a saved board" in {
         controller.load()
         controller.gameStatus should be(LOADED)
-      }
-      val controllerEasy = new Controller(new Board(4, 12))
-      "create easy empty board correctly" in {
-        controllerEasy.createEmptyBoard()
-        controllerEasy.board.rows.size should be(12)
-        controllerEasy.board.rows(0).predictionSize should be(4)
-      }
-      val controllerHard = new Controller(new Board(6, 8))
-      "create hard empty board correctly" in {
-        controllerHard.createEmptyBoard()
-        controllerHard.board.rows.size should be(8)
-        controllerHard.board.rows(0).predictionSize should be(6)
       }
       val controllerNA = new Controller(new Board(7, 7))
       "create with not available size an empty board correctly" in {

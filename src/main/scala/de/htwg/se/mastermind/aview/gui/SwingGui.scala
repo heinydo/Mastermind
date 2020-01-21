@@ -2,12 +2,10 @@ package de.htwg.se.mastermind.aview.gui
 import de.htwg.se.mastermind.controller.controllerComponent.{BoardSizeChanged, ColorSelected, ControllerInterface, PegChanged}
 import scala.swing._
 import scala.swing.event._
-import de.htwg.se.mastermind.util.Observer
 
-class SwingGui(controller: ControllerInterface)  extends Frame with Observer {
+class SwingGui(controller: ControllerInterface)  extends Frame {
   title = "Mastermind"
   preferredSize = new Dimension(520, 640)
-
   listenTo(controller)
 
   def colorPickerPanel: FlowPanel = new FlowPanel {
@@ -69,48 +67,13 @@ class SwingGui(controller: ControllerInterface)  extends Frame with Observer {
   }
 
   menuBar = new MenuBar {
-    contents += new Menu("File") {
+    contents += new Menu("Options") {
       mnemonic = Key.F
       contents += new MenuItem(Action("New") {
         controller.createEmptyBoard()
       })
-      contents += new MenuItem(Action("Save") {
-        controller.save()
-      })
-      contents += new MenuItem(Action("Load") {
-        controller.load()
-      })
       contents += new MenuItem(Action("Quit") {
         System.exit(0)
-      })
-    }
-    contents += new Menu("Edit") {
-      mnemonic = Key.E
-      contents += new MenuItem(Action("Undo") {
-        controller.undo()
-      })
-
-      contents += new MenuItem(Action("Redo") {
-        controller.redo()
-      })
-
-    }
-    contents += new Menu("Solve") {
-      mnemonic = Key.S
-      contents += new MenuItem(Action("Solve") {
-        controller.solve()
-      })
-    }
-    contents += new Menu("Options") {
-      mnemonic = Key.O
-      contents += new MenuItem(Action("easy") {
-        controller.resize(4, 12)
-      })
-      contents += new MenuItem(Action("normal") {
-        controller.resize(4, 10)
-      })
-      contents += new MenuItem(Action("hard") {
-        controller.resize(6, 8)
       })
     }
   }
@@ -135,8 +98,6 @@ class SwingGui(controller: ControllerInterface)  extends Frame with Observer {
     controller.set(controller.getCurrentRoundIndex, controller.mapFromGuiColor(color))
     redraw()
   }
-
-  override def update(): Unit = ???
 }
 
 
